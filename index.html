@@ -38,15 +38,16 @@
         .valeur { color: #000; font-weight: bold; border-bottom: 1px dashed #999; padding: 0 4px; }
         .qr-container { display: flex; justify-content: center; margin: 30px 0; }
         .info-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-start; }
-        .sign-zone { text-align: center; border: 1px solid #333; width: 220px; height: 120px; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; border-radius: 4px; }
-        .sign-title { font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        /* ZONE SIGNATURE SANS LE CADRE */
+        .sign-zone { text-align: center; width: 220px; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-start; padding: 10px; }
+        .sign-title { font-size: 14px; font-weight: bold; text-transform: uppercase; padding-bottom: 50px; }
 
-        /* CONFIGURATION IMPRESSION : ENLEVE LE LIEN DU FICHIER ET LA DATE */
         @media print {
             @page { margin: 1cm; }
             body { background: white; padding: 0; }
             .no-print { display: none !important; }
-            #recu-final { display: block !important; border: none; padding: 20px; box-shadow: none; }
+            #recu-final { display: block !important; border: none; padding: 20px; box-shadow: none; width: 100%; }
         }
     </style>
 </head>
@@ -98,7 +99,7 @@
 
         <div class="info-footer">
             <div><p>Fait à <strong>Conakry</strong>, le <span id="res-date" class="valeur"></span></p></div>
-            <div class="sign-zone"><div class="sign-title">Le Bailleur ou Mandataire</div></div>
+            <div class="sign-zone"><div class="sign-title">Le Bailleur ou Mandataire</div><div style="font-size: 10px; color: #777;">(Signature et cachet)</div></div>
         </div>
         <button class="no-print btn-principal" style="background:#27ae60; margin-top:50px;" onclick="window.print()">IMPRIMER / SAUVEGARDER PDF</button>
     </div>
