@@ -3,51 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quittance de Loyer Officielle</title>
+    <title>Système de Quittances Professionnel - V1.0.0.1</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        :root { --main-color: #2c3e50; --accent-color: #3498db; --edit-color: #27ae60; --del-color: #e74c3c; }
-        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333; padding: 20px; }
-        .app-container { max-width: 850px; margin: auto; }
-        
-        /* Interface de saisie */
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 5px solid var(--accent-color); }
-        h2 { margin-top: 0; font-size: 14px; color: var(--main-color); text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { display: block; font-size: 11px; font-weight: bold; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
-        input { width: 100%; padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; box-sizing: border-box; font-size: 14px; outline-color: var(--accent-color); }
-        .opt-box { display: flex; align-items: center; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 6px; margin-top: 10px; border: 1px solid #eee; cursor: pointer; }
-        .btn-principal { background: var(--main-color); color: white; border: none; border-radius: 6px; padding: 15px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 20px; text-transform: uppercase; transition: 0.3s; }
+        :root {
+            --main-color: #2c3e50;
+            --accent-color: #3498db;
+            --edit-color: #27ae60;
+            --del-color: #e74c3c;
+            --bg-body: #f4f7f6;
+        }
 
-        /* Tableau registre */
-        .hist-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .hist-table th { text-align: left; padding: 12px; background: #f8f9fa; color: #7f8c8d; }
-        .hist-table td { padding: 12px; border-bottom: 1px solid #eee; }
-        .action-link { cursor: pointer; font-weight: bold; font-size: 14px; margin-right: 8px; padding: 4px 8px; border-radius: 4px; border: 1px solid; display: inline-block; }
-        .link-print { color: var(--accent-color); border-color: var(--accent-color); }
-        .link-edit { color: var(--edit-color); border-color: var(--edit-color); }
-        .link-del { color: var(--del-color); border-color: var(--del-color); }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--bg-body); 
+            color: #333; 
+            margin: 0;
+            padding: 20px;
+        }
 
-        /* STYLE DU REÇU */
-        #recu-final { background: white; padding: 60px; display: none; margin-top: 30px; border: 1px solid #ddd; }
-        .top-bar { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid var(--main-color); padding-bottom: 20px; margin-bottom: 40px; }
-        .title-area h1 { margin: 0; font-size: 28px; color: var(--main-color); font-weight: 900; }
-        .ref-no { color: var(--accent-color); font-weight: bold; margin-top: 5px; font-size: 18px; }
-        .message-content { font-size: 18px; line-height: 1.8; color: #222; text-align: justify; }
-        .valeur { color: #000; font-weight: bold; border-bottom: 1px dashed #999; padding: 0 4px; }
-        .qr-container { display: flex; justify-content: center; margin: 30px 0; }
-        .info-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .app-container { max-width: 900px; margin: auto; }
+
+        /* Interface de saisie moderne */
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            margin-bottom: 25px; 
+            border-top: 4px solid var(--accent-color); 
+        }
+
+        h2 { 
+            margin: 0 0 20px 0; 
+            font-size: 16px; 
+            color: var(--main-color); 
+            text-transform: uppercase; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 10px; 
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        /* ZONE SIGNATURE SANS LE CADRE */
-        .sign-zone { text-align: center; width: 220px; min-height: 120px; display: flex; flex-direction: column; justify-content: flex-start; padding: 10px; }
-        .sign-title { font-size: 14px; font-weight: bold; text-transform: uppercase; padding-bottom: 50px; }
+        .field-group { margin-bottom: 15px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
+        
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccd1d1; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px; 
+            transition: border 0.3s;
+        }
+        input:focus { border-color: var(--accent-color); outline: none; }
+
+        .opt-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            background: #fdfefe; 
+            padding: 12px; 
+            border-radius: 4px; 
+            border: 1px solid #eee; 
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-principal { 
+            background: var(--main-color); 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            padding: 16px; 
+            font-weight: bold; 
+            width: 100%; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-principal:hover { filter: brightness(1.2); }
+
+        /* Historique / Registre */
+        .hist-table { width: 100%; border-collapse: collapse; background: white; }
+        .hist-table th { text-align: left; padding: 15px; background: #f8f9fa; color: #7f8c8d; font-size: 12px; }
+        .hist-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+        
+        .action-link { 
+            cursor: pointer; 
+            font-size: 18px; 
+            margin-right: 12px; 
+            padding: 5px; 
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        /* ----- FORMAT DU REÇU (CORRIGÉ POUR MOBILE/IMPRESSION) ----- */
+        #recu-final { 
+            background: white; 
+            padding: 20px; 
+            display: none; 
+            margin: 20px auto; 
+            border: 1px solid #eee; 
+            width: 95%; /* S'adapte au téléphone */
+            max-width: 210mm; /* Taille A4 max sur PC */
+            min-height: 150mm;
+            box-sizing: border-box;
+        }
+
+        .header-quittance { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid var(--main-color); 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+        }
+
+        .title-block h1 { margin: 0; font-size: 22px; color: var(--main-color); }
+        .ref-badge { 
+            display: inline-block;
+            background: #ebf5fb;
+            color: var(--accent-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .body-text { font-size: 16px; line-height: 1.8; text-align: justify; color: #2c3e50; }
+        .valeur-soulignee { font-weight: bold; border-bottom: 1px solid #333; padding: 0 2px; }
+
+        .footer-quittance { 
+            margin-top: 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            flex-wrap: wrap; /* Pour empiler si l'écran est trop petit */
+            gap: 20px;
+        }
+
+        .signature-block { text-align: right; min-width: 200px; }
+        .signature-label { font-weight: bold; text-transform: uppercase; font-size: 12px; margin-bottom: 40px; display: block;}
 
         @media print {
-            @page { margin: 1cm; }
-            body { background: white; padding: 0; }
-            .no-print { display: none !important; }
-            #recu-final { display: block !important; border: none; padding: 20px; box-shadow: none; width: 100%; }
+            body { background: white; padding: 0; margin: 0; }
+            .no-print, .no-print * { display: none !important; }
+            #recu-final { 
+                display: block !important; 
+                border: none; 
+                margin: 0; 
+                width: 100%; 
+                padding: 15mm; /* Marge de sécurité pour les bordures */
+            }
         }
     </style>
 </head>
@@ -55,151 +166,210 @@
 
 <div class="app-container">
     <div class="card no-print">
-        <h2>Nouvelle Quittance</h2>
-        <div style="margin-bottom: 20px;"><label>Logo / Tampon</label><input type="file" id="logoInput" accept="image/*" onchange="previewLogo(event)"></div>
+        <h2>Émission d'une Quittance</h2>
+        
+        <div class="field-group">
+            <label>Logo ou Cachet de l'Entreprise</label>
+            <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(event)">
+        </div>
+
         <div class="grid">
-            <div><label>Bailleur</label><input type="text" id="proprio"></div>
-            <div><label>Locataire</label><input type="text" id="locataire"></div>
+            <div class="field-group"><label>Nom du Bailleur</label><input type="text" id="proprio" placeholder="Ex: M. Diallo"></div>
+            <div class="field-group"><label>Nom du Locataire</label><input type="text" id="locataire" placeholder="Ex: M. Sow"></div>
         </div>
-        <div class="opt-box" onclick="document.getElementById('checkRep').click()"><input type="checkbox" id="checkRep" onchange="toggleRep()" style="width:18px; height:18px;"><span style="font-size: 14px;">Utiliser un mandataire</span></div>
-        <div id="divRep" style="display:none; margin-top:10px;"><label>Nom du Mandataire</label><input type="text" id="nomRep"></div>
-        <div style="margin-top:15px;"><label>Adresse (Quartier)</label><input type="text" id="adresse"></div>
-        <div class="grid" style="margin-top:15px;">
-            <div><label>Loyer (GNF)</label><input type="number" id="montant"></div>
-            <div><label>Mois & Année</label><input type="text" id="mois"></div>
+
+        <div class="opt-box" onclick="document.getElementById('checkRep').click()">
+            <input type="checkbox" id="checkRep" onchange="toggleMandataire()" style="width:18px; height:18px;">
+            <span style="font-size: 14px; font-weight: 600;">Utiliser un mandataire (Gérant)</span>
         </div>
-        <div class="opt-box" onclick="document.getElementById('checkCharges').click()"><input type="checkbox" id="checkCharges" style="width:18px; height:18px;"><span style="font-size: 14px;">Inclure les charges locatives</span></div>
-        <button class="btn-principal" onclick="genererEtSauver()">Générer la Quittance</button>
+
+        <div id="divRep" style="display:none; margin-top:15px;">
+            <label>Nom du Mandataire / Agence</label>
+            <input type="text" id="nomRep" placeholder="Ex: Agence Immobilière X">
+        </div>
+
+        <div class="field-group" style="margin-top:15px;">
+            <label>Adresse du Bien Immobilier</label>
+            <input type="text" id="adresse" placeholder="Quartier, Commune, Ville">
+        </div>
+
+        <div class="grid">
+            <div class="field-group"><label>Montant du Loyer (GNF)</label><input type="number" id="montant" placeholder="000 000"></div>
+            <div class="field-group"><label>Mois Concerné</label><input type="text" id="mois" placeholder="Janvier 2026"></div>
+        </div>
+
+        <div class="opt-box" onclick="document.getElementById('checkCharges').click()">
+            <input type="checkbox" id="checkCharges" style="width:18px; height:18px;">
+            <span style="font-size: 14px; font-weight: 600;">Inclure les charges locatives</span>
+        </div>
+
+        <button class="btn-principal" onclick="validerQuittance()">GÉNÉRER ET ENREGISTRER</button>
     </div>
 
     <div class="card no-print">
-        <h2>Historique</h2>
-        <table class="hist-table">
-            <thead><tr><th>N°</th><th>Date</th><th>Locataire</th><th>Actions</th></tr></thead>
-            <tbody id="hist-body"></tbody>
-        </table>
+        <h2>Registre des paiements</h2>
+        <div style="overflow-x: auto;">
+            <table class="hist-table">
+                <thead>
+                    <tr>
+                        <th>RÉF</th>
+                        <th>DATE</th>
+                        <th>LOCATAIRE</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="hist-body"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="recu-final">
-        <div class="top-bar">
-            <div class="title-area">
+        <div class="header-quittance">
+            <div class="title-block">
                 <h1>QUITTANCE DE LOYER</h1>
-                <div class="ref-no">Réf : <span id="res-num"></span></div>
+                <div class="ref-badge">N° <span id="res-num"></span></div>
             </div>
-            <img id="logo-display" style="max-height: 90px; display:none;">
+            <img id="logo-display" style="max-height: 80px; display:none;">
         </div>
 
-        <div class="message-content">
+        <div class="body-text">
             <p id="intro-phrase"></p>
-            <p>Certifie avoir reçu de la part de <span class="valeur" id="res-locataire"></span>, la somme totale de <span class="valeur" id="res-montant"></span> au titre du règlement du <span id="res-label">loyer</span>.</p>
-            <p>Ce paiement est afférent à la période d'occupation du mois de <span class="valeur" id="res-mois"></span>, pour les locaux situés au quartier <span class="valeur" id="res-adresse"></span>, à Conakry.</p>
-            <p>Sous réserve de tous nos droits, la présente quittance est délivrée pour valoir ce que de droit, libérant le locataire de sa dette locative pour la période susmentionnée.</p>
-            <div class="qr-container"><div id="qrcode"></div></div>
+            <p>Déclare avoir reçu de la part de <span class="valeur-soulignee" id="res-locataire"></span>, la somme totale de <span class="valeur-soulignee" id="res-montant"></span> au titre du règlement du <span id="res-label">loyer</span>.</p>
+            <p>Ce versement correspond à la période d'occupation s'étendant sur le mois de <span class="valeur-soulignee" id="res-mois"></span>, pour le local situé à : <span class="valeur-soulignee" id="res-adresse"></span>.</p>
+            <p>Cette quittance annule tout reçu précédent concernant la même période et libère le locataire de son obligation de paiement pour ledit mois, sous réserve d'encaissement effectif.</p>
+            
+            <div style="display: flex; justify-content: center; margin: 40px 0;">
+                <div id="qrcode"></div>
+            </div>
         </div>
 
-        <div class="info-footer">
-            <div><p>Fait à <strong>Conakry</strong>, le <span id="res-date" class="valeur"></span></p></div>
-            <div class="sign-zone"><div class="sign-title">Le Bailleur ou Mandataire</div><div style="font-size: 10px; color: #777;">(Signature et cachet)</div></div>
+        <div class="footer-quittance">
+            <div class="date-lieu">
+                <p>Fait à <strong>Conakry</strong>,<br>Le <span id="res-date"></span></p>
+            </div>
+            <div class="signature-block">
+                <span class="signature-label">Le Bailleur ou Mandataire</span>
+                <div style="font-style: italic; color: #95a5a6; font-size: 12px;">(Signature et cachet)</div>
+            </div>
         </div>
-        <button class="no-print btn-principal" style="background:#27ae60; margin-top:50px;" onclick="window.print()">IMPRIMER / SAUVEGARDER PDF</button>
+
+        <button class="no-print btn-principal" style="background:var(--edit-color); margin-top:50px;" onclick="window.print()">TÉLÉCHARGER LE PDF</button>
     </div>
 </div>
 
 <script>
-    let logoData = "";
-    let historique = JSON.parse(localStorage.getItem('quittance_final_v2')) || [];
-    window.onload = function() { afficherHistorique(); };
+    let currentLogo = "";
+    let db = JSON.parse(localStorage.getItem('quittances_pro_v3')) || [];
 
-    function previewLogo(e) {
+    window.onload = () => { actualiserTableau(); };
+
+    function handleLogo(e) {
         const reader = new FileReader();
         reader.onload = () => { 
-            logoData = reader.result; 
-            document.getElementById('logo-display').src = logoData;
+            currentLogo = reader.result; 
+            document.getElementById('logo-display').src = currentLogo;
             document.getElementById('logo-display').style.display = 'block';
         };
         reader.readAsDataURL(e.target.files[0]);
     }
 
-    function toggleRep() { document.getElementById('divRep').style.display = document.getElementById('checkRep').checked ? 'block' : 'none'; }
-
-    function genererEtSauver() {
-        let num = historique.length > 0 ? Math.max(...historique.map(h => h.num)) + 1 : 1;
-        const data = {
-            id: Date.now(), num: num, date: new Date().toLocaleDateString('fr-FR'),
-            proprio: document.getElementById('proprio').value, locataire: document.getElementById('locataire').value,
-            adresse: document.getElementById('adresse').value, mois: document.getElementById('mois').value,
-            montant: document.getElementById('montant').value, rep: document.getElementById('nomRep').value,
-            estRep: document.getElementById('checkRep').checked, charges: document.getElementById('checkCharges').checked
-        };
-        historique.push(data);
-        localStorage.setItem('quittance_final_v2', JSON.stringify(historique));
-        remplirRecu(data);
-        afficherHistorique();
+    function toggleMandataire() {
+        document.getElementById('divRep').style.display = document.getElementById('checkRep').checked ? 'block' : 'none';
     }
 
-    function remplirRecu(item) {
-        const mntF = new Intl.NumberFormat('fr-FR').format(item.montant) + " GNF";
-        const numF = "Q" + new Date().getFullYear() + "-" + item.num.toString().padStart(3, '0');
-        document.getElementById('intro-phrase').innerHTML = item.estRep ? `Je soussigné(e), <span class="valeur">${item.rep}</span>, agissant en qualité de mandataire pour le compte du bailleur, <span class="valeur">${item.proprio}</span>,` : `Je soussigné(e), <span class="valeur">${item.proprio}</span>, en ma qualité de bailleur du logement désigné ci-après,`;
-        document.getElementById('res-locataire').innerText = item.locataire;
-        document.getElementById('res-montant').innerText = mntF;
-        document.getElementById('res-mois').innerText = item.mois;
-        document.getElementById('res-adresse').innerText = item.adresse;
-        document.getElementById('res-date').innerText = item.date;
-        document.getElementById('res-num').innerText = numF;
-        document.getElementById('res-label').innerText = item.charges ? "loyer charges comprises" : "loyer principal";
+    function validerQuittance() {
+        const fields = ['proprio', 'locataire', 'adresse', 'montant', 'mois'];
+        for(let f of fields) { if(!document.getElementById(f).value) { alert("Veuillez remplir tous les champs."); return; } }
+
+        const quittance = {
+            id: Date.now(),
+            num: db.length + 1,
+            date: new Date().toLocaleDateString('fr-FR'),
+            proprio: document.getElementById('proprio').value,
+            locataire: document.getElementById('locataire').value,
+            adresse: document.getElementById('adresse').value,
+            montant: document.getElementById('montant').value,
+            mois: document.getElementById('mois').value,
+            rep: document.getElementById('nomRep').value,
+            isRep: document.getElementById('checkRep').checked,
+            hasCharges: document.getElementById('checkCharges').checked
+        };
+
+        db.push(quittance);
+        localStorage.setItem('quittances_pro_v3', JSON.stringify(db));
+        genererRecu(quittance);
+        actualiserTableau();
+    }
+
+    function genererRecu(item) {
+        const montantFormat = new Intl.NumberFormat('fr-FR').format(item.montant) + " GNF";
+        const reference = "REF-" + new Date().getFullYear() + "-" + item.num.toString().padStart(3, '0');
+        
+        document.getElementById('res-num').textContent = reference;
+        document.getElementById('res-locataire').textContent = item.locataire;
+        document.getElementById('res-montant').textContent = montantFormat;
+        document.getElementById('res-mois').textContent = item.mois;
+        document.getElementById('res-adresse').textContent = item.adresse;
+        document.getElementById('res-date').textContent = item.date;
+        document.getElementById('res-label').textContent = item.hasCharges ? "loyer (charges incluses)" : "loyer principal";
+
+        const intro = item.isRep ? 
+            `Je soussigné(e) <span class="valeur-soulignee">${item.rep}</span>, agissant pour le compte de <span class="valeur-soulignee">${item.proprio}</span>,` : 
+            `Je soussigné(e) <span class="valeur-soulignee">${item.proprio}</span>, propriétaire du bien,`;
+        document.getElementById('intro-phrase').innerHTML = intro;
+
         document.getElementById("qrcode").innerHTML = "";
-        try { if(typeof QRCode !== "undefined") { new QRCode(document.getElementById("qrcode"), { text: "REF:" + numF + " | " + item.locataire, width: 90, height: 90 }); } } catch(e) {}
+        new QRCode(document.getElementById("qrcode"), { text: reference + " | " + item.locataire, width: 100, height: 100 });
+
         document.getElementById('recu-final').style.display = 'block';
         window.scrollTo({ top: document.getElementById('recu-final').offsetTop, behavior: 'smooth' });
     }
 
-    function afficherHistorique() {
+    function actualiserTableau() {
         const body = document.getElementById('hist-body');
         body.innerHTML = "";
-        historique.slice().reverse().forEach(item => {
-            body.innerHTML += `<tr>
-                <td><b>${item.num.toString().padStart(3, '0')}</b></td>
+        db.slice().reverse().forEach(item => {
+            const row = `<tr>
+                <td><b>#${item.num.toString().padStart(3, '0')}</b></td>
                 <td>${item.date}</td>
                 <td>${item.locataire}</td>
                 <td>
-                    <span class="action-link link-print" onclick="reimprimer(${item.id})">🖨️</span>
-                    <span class="action-link link-edit" onclick="modifier(${item.id})">✎</span>
-                    <span class="action-link link-del" onclick="supprimer(${item.id})">🗑</span>
+                    <span class="action-link" style="color:var(--accent-color)" onclick="charger(${item.id})">👁️</span>
+                    <span class="action-link" style="color:var(--edit-color)" onclick="editer(${item.id})">✎</span>
+                    <span class="action-link" style="color:var(--del-color)" onclick="supprimer(${item.id})">🗑</span>
                 </td>
             </tr>`;
+            body.insertAdjacentHTML('beforeend', row);
         });
     }
 
-    function reimprimer(id) {
-        const item = historique.find(i => i.id === id);
-        if(item) remplirRecu(item);
+    function charger(id) {
+        const item = db.find(i => i.id === id);
+        if(item) genererRecu(item);
     }
 
-    function modifier(id) {
-        const item = historique.find(i => i.id === id);
+    function editer(id) {
+        const item = db.find(i => i.id === id);
         if(item) {
             document.getElementById('proprio').value = item.proprio;
             document.getElementById('locataire').value = item.locataire;
             document.getElementById('adresse').value = item.adresse;
             document.getElementById('montant').value = item.montant;
             document.getElementById('mois').value = item.mois;
-            document.getElementById('checkRep').checked = item.estRep;
-            toggleRep();
-            historique = historique.filter(i => i.id !== id);
-            localStorage.setItem('quittance_final_v2', JSON.stringify(historique));
-            afficherHistorique();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('checkRep').checked = item.isRep;
+            document.getElementById('nomRep').value = item.rep;
+            toggleMandataire();
+            supprimer(id, true);
         }
     }
 
-    function supprimer(id) {
-        if(confirm("Supprimer ?")) {
-            historique = historique.filter(i => i.id !== id);
-            localStorage.setItem('quittance_final_v2', JSON.stringify(historique));
-            afficherHistorique();
-        }
+    function supprimer(id, silent = false) {
+        if(!silent && !confirm("Supprimer cette quittance ?")) return;
+        db = db.filter(i => i.id !== id);
+        localStorage.setItem('quittances_pro_v3', JSON.stringify(db));
+        actualiserTableau();
     }
 </script>
+
 </body>
 </html>
