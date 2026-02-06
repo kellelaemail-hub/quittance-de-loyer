@@ -150,6 +150,12 @@
         .signature-label { font-weight: bold; text-transform: uppercase; font-size: 12px; margin-bottom: 40px; display: block;}
 
         @media print {
+		@page {
+    margin: 0; /* Force les marges à zéro pour cacher les en-têtes du navigateur */
+}
+body {
+    padding: 1cm; /* Redonne une marge interne pour que le texte ne touche pas le bord du papier */
+}
             body { background: white; padding: 0; margin: 0; }
             .no-print, .no-print * { display: none !important; }
             #recu-final { 
@@ -171,6 +177,8 @@
         <div class="field-group">
             <label>Logo ou Cachet de l'Entreprise</label>
             <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(event)">
+			<label>Signature ou Cachet (Apparaît en bas)</label>
+    <input type="file" id="signInput" accept="image/*" onchange="handleSignature(event)">
         </div>
 
         <div class="grid">
@@ -249,7 +257,8 @@
             </div>
             <div class="signature-block">
                 <span class="signature-label">Le Bailleur ou Mandataire</span>
-                <div style="font-style: italic; color: #95a5a6; font-size: 12px;">(Signature et cachet)</div>
+                <img id="sign-display" style="max-height: 100px; margin-top: 10px; display:none; margin-left: auto;">
+<div id="sign-text" style="font-style: italic; color: #95a5a6; font-size: 12px;">(Signature et cachet)</div>
             </div>
         </div>
 
@@ -272,6 +281,16 @@
         };
         reader.readAsDataURL(e.target.files[0]);
     }
+	function handleSignature(e) {
+    const reader = new FileReader();
+    reader.onload = () => { 
+        const signData = reader.result; 
+        document.getElementById('sign-display').src = signData;
+        document.getElementById('sign-display').style.display = 'block';
+        document.getElementById('sign-text').style.display = 'none'; // Cache le texte quand l'image est là
+    };
+    reader.readAsDataURL(e.target.files[0]);
+}
 
     function toggleMandataire() {
         document.getElementById('divRep').style.display = document.getElementById('checkRep').checked ? 'block' : 'none';
@@ -304,6 +323,8 @@
     function genererRecu(item) {
         const montantFormat = new Intl.NumberFormat('fr-FR').format(item.montant) + " GNF";
         const reference = "REF-" + new Date().getFullYear() + "-" + item.num.toString().padStart(3, '0');
+		// Change le nom du document pour l'enregistrement PDF
+document.title = item.locataire.toUpperCase() + "-" + reference;
         
         document.getElementById('res-num').textContent = reference;
         document.getElementById('res-locataire').textContent = item.locataire;
